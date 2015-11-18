@@ -10,8 +10,10 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
+  - 65: {fileID: 6541930}
   - 114: {fileID: 11400000}
   - 114: {fileID: 11464272}
+  - 114: {fileID: 11402834}
   m_Layer: 4
   m_Name: WaterProDaytime
   m_TagString: Untagged
@@ -74,6 +76,18 @@ MeshFilter:
 --- !u!1002 &3300001
 EditorExtensionImpl:
   serializedVersion: 6
+--- !u!65 &6541930
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: -5, z: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -98,6 +112,19 @@ MonoBehaviour:
 --- !u!1002 &11400001
 EditorExtensionImpl:
   serializedVersion: 6
+--- !u!114 &11402834
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c693f8f8a6eb0314199342173d484505, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 15
+  viscosity: 2
 --- !u!114 &11464272
 MonoBehaviour:
   m_ObjectHideFlags: 1

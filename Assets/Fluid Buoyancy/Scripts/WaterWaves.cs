@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 namespace FluidBuoyancy
 {
     public class WaterWaves : MonoBehaviour
@@ -20,17 +21,38 @@ namespace FluidBuoyancy
             this.vertices = new Vector3[this.baseVertices.Length];
         }
 
+        protected virtual void Start()
+        {
+            this.ResizeBoxCollider();
+        }
+
         protected virtual void Update()
         {
             for (var i = 0; i < this.vertices.Length; i++)
             {
                 var vertex = this.baseVertices[i];
-                vertex.y += Mathf.Sin(Time.time * this.speed + this.baseVertices[i].x + this.baseVertices[i].y + this.baseVertices[i].z) * this.height;
+                vertex.y += 
+                    Mathf.Sin(Time.time * this.speed + this.baseVertices[i].x + this.baseVertices[i].y + this.baseVertices[i].z) * 
+                    (this.height / this.transform.localScale.y);
+
                 this.vertices[i] = vertex;
             }
 
             this.mesh.vertices = this.vertices;
             this.mesh.RecalculateNormals();
+        }
+
+        private void ResizeBoxCollider()
+        {
+            var boxCollider = this.GetComponent<BoxCollider>();
+            if (boxCollider != null)
+            {
+                Vector3 center = boxCollider.center;
+                center.y = boxCollider.size.y / -2f;
+                center.y += this.height / this.transform.localScale.y;
+
+                boxCollider.center = center;
+            }
         }
     }
 }
