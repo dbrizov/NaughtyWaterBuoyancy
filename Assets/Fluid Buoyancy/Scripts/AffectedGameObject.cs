@@ -2,21 +2,72 @@
 
 namespace FluidBuoyancy
 {
-
     public class AffectedGameObject
     {
-        public Mesh Mesh { get; set; }
-        public Rigidbody Rigidbody { get; set; }
+        private GameObject gameObject;
+        private Mesh mesh;
+        private Rigidbody rigidbody;
+        private BoxCollider boxCollider;
 
-        public AffectedGameObject(Mesh mesh, Rigidbody rigidbody)
+        public AffectedGameObject(GameObject gameObject)
         {
-            this.Mesh = mesh;
-            this.Rigidbody = rigidbody;
+            this.GameObject = gameObject;
+        }
+
+        public GameObject GameObject
+        {
+            get
+            {
+                return this.gameObject;
+            }
+            private set
+            {
+                this.gameObject = value;
+            }
+        }
+
+        public Mesh Mesh
+        {
+            get
+            {
+                if (this.mesh == null)
+                {
+                    this.mesh = this.GameObject.GetComponent<MeshFilter>().mesh;
+                }
+
+                return this.mesh;
+            }
+        }
+
+        public Rigidbody Rigidbody
+        {
+            get
+            {
+                if (this.rigidbody == null)
+                {
+                    this.rigidbody = this.GameObject.GetComponent<Rigidbody>();
+                }
+
+                return this.rigidbody;
+            }
+        }
+
+        public BoxCollider BoxCollider
+        {
+            get
+            {
+                if (this.boxCollider == null)
+                {
+                    this.boxCollider = this.GameObject.GetComponent<BoxCollider>();
+                }
+
+                return this.boxCollider;
+            }
         }
 
         public override int GetHashCode()
         {
-            return this.Rigidbody.GetHashCode();
+            return this.GameObject.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -32,7 +83,7 @@ namespace FluidBuoyancy
                 return false;
             }
 
-            return this.Rigidbody.Equals(objAsAffectedGO.Rigidbody);
+            return this.GameObject.Equals(objAsAffectedGO.GameObject);
         }
     }
 }
