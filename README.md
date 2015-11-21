@@ -1,5 +1,5 @@
-# Unity-FluidBuoyancy
-Fluid Buoyancy Simulator
+# Unity-WaterBuoyancy
+Water Buoyancy Simulator
 
 ## License
 
