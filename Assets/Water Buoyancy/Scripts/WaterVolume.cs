@@ -7,6 +7,8 @@ namespace FluidBuoyancy
     [RequireComponent(typeof(BoxCollider))]
     public class WaterVolume : MonoBehaviour
     {
+        public const string TAG = "Water Volume";
+
         [SerializeField]
         private Transform trans;
 
@@ -21,15 +23,14 @@ namespace FluidBuoyancy
 
         protected virtual void Update()
         {
-            this.meshVertices = this.mesh.vertices;
-            this.meshWorldPoints = this.ConvertPointsToWorldSpace(meshVertices);
+            this.CacheMeshVertices();
 
             var points = this.GetClosestPointsOnWaterSurface(trans.position, 3);
             for (int i = 0; i < points.Length; i++)
             {
                 DebugUtils.DrawPoint(points[i], Color.red);
             }
-            
+
             if (this.IsPointUnderWater(trans.position))
             {
                 trans.GetComponent<Renderer>().sharedMaterial.color = Color.red;
@@ -59,7 +60,7 @@ namespace FluidBuoyancy
 
         private bool IsPointUnderWater(Vector3 point)
         {
-            return this.GetWaterLevel(point) > 0f;
+            return this.GetWaterLevel(point) - point.y > 0f;
         }
 
         public float GetWaterLevel(Vector3 point)
@@ -74,14 +75,20 @@ namespace FluidBuoyancy
             }
 
             float yOnWaterSurface = (-(point.x * planeNormal.x) - (point.z * planeNormal.z) + Vector3.Dot(meshPoligon[0], planeNormal)) / planeNormal.y;
-            Vector3 pointOnWaterSurface = new Vector3(point.x, yOnWaterSurface, point.z);
+            //Vector3 pointOnWaterSurface = new Vector3(point.x, yOnWaterSurface, point.z);
             //DebugUtils.DrawPoint(pointOnWaterSurface, Color.magenta);
             //Debug.DrawLine(pointOnWaterSurface, pointOnWaterSurface + planeNormal, Color.blue);
             //Debug.DrawLine(pointOnWaterSurface, meshPoligon[0], Color.green);
             //Debug.DrawLine(pointOnWaterSurface, meshPoligon[1], Color.green);
             //Debug.DrawLine(pointOnWaterSurface, meshPoligon[2], Color.green);
 
-            return pointOnWaterSurface.y - point.y;
+            return yOnWaterSurface;
+        }
+
+        private void CacheMeshVertices()
+        {
+            this.meshVertices = this.mesh.vertices;
+            this.meshWorldPoints = this.ConvertPointsToWorldSpace(meshVertices);
         }
 
         private Vector3[] ConvertPointsToWorldSpace(Vector3[] points)
