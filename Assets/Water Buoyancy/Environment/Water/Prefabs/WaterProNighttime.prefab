@@ -13,9 +13,10 @@ GameObject:
   - 65: {fileID: 6592256}
   - 114: {fileID: 11400000}
   - 114: {fileID: 11480822}
+  - 114: {fileID: 11488420}
   m_Layer: 4
   m_Name: WaterProNighttime
-  m_TagString: Untagged
+  m_TagString: Water Volume
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,6 +125,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   height: .200000003
+--- !u!114 &11488420
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c693f8f8a6eb0314199342173d484505, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trans: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -146,6 +159,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Size.z
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: Water Volume
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
