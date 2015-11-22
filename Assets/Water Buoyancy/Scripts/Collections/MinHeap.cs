@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FluidBuoyancy.Collections
+namespace WaterBuoyancy.Collections
 {
     public class MinHeap<T>
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using FluidBuoyancy.Collections;
+using WaterBuoyancy.Collections;
 
 namespace WaterBuoyancy
 {
