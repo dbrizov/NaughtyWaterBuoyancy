@@ -10,11 +10,16 @@ namespace FluidBuoyancy
         public const string TAG = "Water Volume";
 
         [SerializeField]
-        private Transform trans;
+        private float density = 1f;
 
         private Mesh mesh;
         private Vector3[] meshVertices;
         private Vector3[] meshWorldPoints;
+
+        public float Density
+        {
+            get { return this.density; }
+        }
 
         protected virtual void Awake()
         {
@@ -23,22 +28,7 @@ namespace FluidBuoyancy
 
         protected virtual void Update()
         {
-            this.CacheMeshVertices();
-
-            var points = this.GetClosestPointsOnWaterSurface(trans.position, 3);
-            for (int i = 0; i < points.Length; i++)
-            {
-                DebugUtils.DrawPoint(points[i], Color.red);
-            }
-
-            if (this.IsPointUnderWater(trans.position))
-            {
-                trans.GetComponent<Renderer>().sharedMaterial.color = Color.red;
-            }
-            else
-            {
-                trans.GetComponent<Renderer>().sharedMaterial.color = Color.green;
-            }
+            this.UpdateMeshVertices();
         }
 
         public Vector3[] GetClosestPointsOnWaterSurface(Vector3 point, int pointsCount)
@@ -85,7 +75,7 @@ namespace FluidBuoyancy
             return yOnWaterSurface;
         }
 
-        private void CacheMeshVertices()
+        private void UpdateMeshVertices()
         {
             this.meshVertices = this.mesh.vertices;
             this.meshWorldPoints = this.ConvertPointsToWorldSpace(meshVertices);
