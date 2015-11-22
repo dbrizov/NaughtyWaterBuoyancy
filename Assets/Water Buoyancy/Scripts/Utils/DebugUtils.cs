@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace FluidBuoyancy
+namespace WaterBuoyancy
 {
     public static class DebugUtils
     {

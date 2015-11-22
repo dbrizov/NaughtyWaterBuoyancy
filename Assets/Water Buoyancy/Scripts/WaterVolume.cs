@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FluidBuoyancy.Collections;
 
-namespace FluidBuoyancy
+namespace WaterBuoyancy
 {
     [RequireComponent(typeof(BoxCollider))]
     public class WaterVolume : MonoBehaviour
