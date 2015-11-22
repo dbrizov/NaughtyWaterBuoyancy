@@ -60,7 +60,7 @@ namespace FluidBuoyancy
         {
             if (this.water != null && this.voxels.Length > 0)
             {
-                Vector3 forceAtSingleVoxel = CalculateBouyancyForce() / this.voxels.Length;
+                Vector3 forceAtSingleVoxel = this.bouyancyForce / this.voxels.Length;
 
                 float submergedVolume = 0f;
                 for (int i = 0; i < this.voxels.Length; i++)
@@ -93,8 +93,6 @@ namespace FluidBuoyancy
                     this.voxels = this.CutIntoVoxels();
                 }
 
-                this.rigidbody.drag = this.dragInWater;
-                this.rigidbody.angularDrag = this.angularDragInWater;
                 this.bouyancyForce = this.CalculateBouyancyForce();
             }
         }
@@ -104,8 +102,6 @@ namespace FluidBuoyancy
             if (other.CompareTag(WaterVolume.TAG))
             {
                 this.water = null;
-                this.rigidbody.drag = this.initialDrag;
-                this.rigidbody.angularDrag = this.initialAngularDrag;
             }
         }
 
