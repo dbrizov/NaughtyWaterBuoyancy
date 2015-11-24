@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using WaterBuoyancy.Collections;
-using System;
 
 namespace WaterBuoyancy
 {
@@ -14,12 +13,13 @@ namespace WaterBuoyancy
         private float density = 1f;
 
         [SerializeField]
-        private Transform debugTrans;
+        private Transform debugTrans; // Only for debugging
 
         private Mesh mesh;
         private Vector3[] meshLocalVertices;
         private Vector3[] meshWorldVertices;
         private List<Vector3[]> meshTrianglesInWorldSpace;
+        private Vector3[] lastCashedTrianglePolygon;
 
         public float Density
         {
@@ -39,54 +39,64 @@ namespace WaterBuoyancy
             this.CacheMeshTrianglesInWorldSpace();
         }
 
-        public Vector3[] GetClosestTrinaglePolygon(Vector3 point)
+        protected virtual void OnDrawGizmos()
         {
+            if (this.meshTrianglesInWorldSpace == null)
+            {
+                return;
+            }
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(debugTrans.position, 0.1f);
+
+            for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
+            {
+                if (MathfUtils.IsPointInTriangle(debugTrans.position, this.meshTrianglesInWorldSpace[i], false, true, false))
+                {
+                    Gizmos.color = Color.green;
+
+                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][0], this.meshTrianglesInWorldSpace[i][1]);
+                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][1], this.meshTrianglesInWorldSpace[i][2]);
+                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][2], this.meshTrianglesInWorldSpace[i][0]);
+                }
+            }
+        }
+
+        public Vector3[] GetSurroundingTrianglePolygon(Vector3 point)
+        {
+            if (this.lastCashedTrianglePolygon != null &&
+                MathfUtils.IsPointInTriangle(point, this.lastCashedTrianglePolygon, false, true, false))
+            {
+                return this.lastCashedTrianglePolygon;
+            }
+
             for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
             {
                 if (MathfUtils.IsPointInTriangle(point, this.meshTrianglesInWorldSpace[i], false, true, false))
                 {
-                    return this.meshTrianglesInWorldSpace[i];
+                    this.lastCashedTrianglePolygon = this.meshTrianglesInWorldSpace[i];
+                    return this.lastCashedTrianglePolygon;
                 }
             }
 
-            return null;
+            throw new System.ArgumentException("Point not in the water", "point");
         }
 
         public Vector3[] GetClosestPointsOnWaterSurface(Vector3 point, int pointsCount)
         {
-            MinHeap<Vector3> closestPoints = new MinHeap<Vector3>(new Vector3HorizontalDistanceComparer(point));
+            MinHeap<Vector3> allPoints = new MinHeap<Vector3>(new Vector3HorizontalDistanceComparer(point));
             for (int i = 0; i < this.meshWorldVertices.Length; i++)
             {
-                closestPoints.Add(this.meshWorldVertices[i]);
+                allPoints.Add(this.meshWorldVertices[i]);
             }
 
-            Vector3[] result = new Vector3[pointsCount];
-            for (int i = 0; i < result.Length; i++)
+            Vector3[] closest = new Vector3[pointsCount];
+            for (int i = 0; i < closest.Length; i++)
             {
-                result[i] = closestPoints.Remove();
+                closest[i] = allPoints.Remove();
             }
 
-            return result;
-        }
-
-        private void CacheMeshTrianglesInWorldSpace()
-        {
-            int[] triangles = this.mesh.triangles;
-            if (this.meshTrianglesInWorldSpace == null)
-            {
-                this.meshTrianglesInWorldSpace = new List<Vector3[]>(triangles.Length / 3);
-                for (int i = 0; i < triangles.Length; i += 3)
-                {
-                    this.meshTrianglesInWorldSpace.Add(new Vector3[3]);
-                }
-            }
-
-            for (int i = 0; i < triangles.Length; i += 3)
-            {
-                this.meshTrianglesInWorldSpace[i / 3][0] = this.meshWorldVertices[triangles[i]];
-                this.meshTrianglesInWorldSpace[i / 3][1] = this.meshWorldVertices[triangles[i + 1]];
-                this.meshTrianglesInWorldSpace[i / 3][2] = this.meshWorldVertices[triangles[i + 2]];
-            }
+            return closest;
         }
 
         private bool IsPointUnderWater(Vector3 point)
@@ -96,10 +106,7 @@ namespace WaterBuoyancy
 
         public float GetWaterLevel(Vector3 point)
         {
-            Profiler.BeginSample("GetPolygon");
-            //Vector3[] meshPolygon = this.GetClosestPointsOnWaterSurface(point, 3);
-            Vector3[] meshPolygon = this.GetClosestTrinaglePolygon(point);
-            Profiler.EndSample();
+            Vector3[] meshPolygon = this.GetSurroundingTrianglePolygon(point);
 
             Vector3 planeV1 = meshPolygon[1] - meshPolygon[0];
             Vector3 planeV2 = meshPolygon[2] - meshPolygon[0];
@@ -124,6 +131,26 @@ namespace WaterBuoyancy
         {
             this.meshLocalVertices = this.mesh.vertices;
             this.meshWorldVertices = this.ConvertPointsToWorldSpace(meshLocalVertices);
+        }
+
+        private void CacheMeshTrianglesInWorldSpace()
+        {
+            int[] triangles = this.mesh.triangles;
+            if (this.meshTrianglesInWorldSpace == null)
+            {
+                this.meshTrianglesInWorldSpace = new List<Vector3[]>(triangles.Length / 3);
+                for (int i = 0; i < triangles.Length; i += 3)
+                {
+                    this.meshTrianglesInWorldSpace.Add(new Vector3[3]);
+                }
+            }
+
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                this.meshTrianglesInWorldSpace[i / 3][0] = this.meshWorldVertices[triangles[i]];
+                this.meshTrianglesInWorldSpace[i / 3][1] = this.meshWorldVertices[triangles[i + 1]];
+                this.meshTrianglesInWorldSpace[i / 3][2] = this.meshWorldVertices[triangles[i + 2]];
+            }
         }
 
         private Vector3[] ConvertPointsToWorldSpace(Vector3[] points)
@@ -164,29 +191,6 @@ namespace WaterBuoyancy
                 else
                 {
                     return 0;
-                }
-            }
-        }
-
-        protected virtual void OnDrawGizmos()
-        {
-            if (this.meshTrianglesInWorldSpace == null)
-            {
-                return;
-            }
-            
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(debugTrans.position, 0.1f);
-            
-            for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
-            {
-                if (MathfUtils.IsPointInTriangle(debugTrans.position, this.meshTrianglesInWorldSpace[i], false, true, false))
-                {
-                    Gizmos.color = Color.green;
-
-                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][0], this.meshTrianglesInWorldSpace[i][1]);
-                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][1], this.meshTrianglesInWorldSpace[i][2]);
-                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][2], this.meshTrianglesInWorldSpace[i][0]);
                 }
             }
         }

@@ -16,7 +16,8 @@ namespace WaterBuoyancy
 
         [SerializeField]
         [Range(0f, 1f)]
-        private float normalizedVoxelSize = 0.25f;
+        [Tooltip("Normalized percentage of the object's bounds size for each axis")]
+        private float normalizedVoxelSize = 0.33f;
 
         [SerializeField]
         private float dragInWater = 1f;
@@ -52,7 +53,6 @@ namespace WaterBuoyancy
             {
                 float volume = MathfUtils.CalculateVolume_Mesh(this.GetComponent<MeshFilter>().mesh, this.transform);
                 this.density = this.rigidbody.mass / volume;
-                Debug.Log(this.density);
             }
         }
 
@@ -67,10 +67,7 @@ namespace WaterBuoyancy
                 {
                     Vector2 point = this.transform.TransformPoint(this.voxels[i]);
 
-                    Profiler.BeginSample("WaterLevel");
                     float waterLevel = this.water.GetWaterLevel(point);
-                    Profiler.EndSample();
-
                     float deepLevel = waterLevel - point.y + (this.minVoxelSize / 2f); // How deep is the point                    
                     float submergedFactor = Mathf.Clamp(deepLevel / this.minVoxelSize, 0f, 1f); // 0 - voxel is fully out of the water, 1 - voxel is fully submerged
                     submergedVolume += submergedFactor;
@@ -106,6 +103,18 @@ namespace WaterBuoyancy
             if (other.CompareTag(WaterVolume.TAG))
             {
                 this.water = null;
+            }
+        }
+
+        protected virtual void OnDrawGizmos()
+        {
+            if (this.voxels != null)
+            {
+                for (int i = 0; i < this.voxels.Length; i++)
+                {
+                    Gizmos.color = Color.magenta - new Color(0f, 0f, 0f, 0.75f);
+                    Gizmos.DrawCube(this.transform.TransformPoint(this.voxels[i]), this.voxelSize * 0.8f);
+                }
             }
         }
 
@@ -145,18 +154,6 @@ namespace WaterBuoyancy
             }
 
             return voxels.ToArray();
-        }        
-
-        protected virtual void OnDrawGizmos()
-        {
-            if (this.voxels != null)
-            {
-                for (int i = 0; i < this.voxels.Length; i++)
-                {
-                    Gizmos.color = Color.magenta - new Color(0f, 0f, 0f, 0.75f);
-                    Gizmos.DrawCube(this.transform.TransformPoint(this.voxels[i]), this.voxelSize * 0.8f);
-                }
-            }
         }
     }
 }
