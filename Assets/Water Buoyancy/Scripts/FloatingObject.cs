@@ -33,7 +33,7 @@ namespace WaterBuoyancy
         private float minVoxelSize;
         private Vector3 voxelSize;
         private Vector3[] voxels;
-        private Vector3 bouyancyForce;
+        private Vector3 maxBouyancyForce;
 
         protected virtual void Awake()
         {
@@ -51,8 +51,8 @@ namespace WaterBuoyancy
 
             if (this.calculateDensity)
             {
-                float volume = MathfUtils.CalculateVolume_Mesh(this.GetComponent<MeshFilter>().mesh, this.transform);
-                this.density = this.rigidbody.mass / volume;
+                float objectVolume = MathfUtils.CalculateVolume_Mesh(this.GetComponent<MeshFilter>().mesh, this.transform);
+                this.density = this.rigidbody.mass / objectVolume;
             }
         }
 
@@ -60,7 +60,7 @@ namespace WaterBuoyancy
         {
             if (this.water != null && this.voxels.Length > 0)
             {
-                Vector3 forceAtSingleVoxel = this.bouyancyForce / this.voxels.Length;
+                Vector3 forceAtSingleVoxel = this.maxBouyancyForce / this.voxels.Length;
 
                 float submergedVolume = 0f;
                 for (int i = 0; i < this.voxels.Length; i++)
@@ -94,7 +94,7 @@ namespace WaterBuoyancy
                     this.voxels = this.CutIntoVoxels();
                 }
 
-                this.bouyancyForce = this.CalculateBouyancyForce();
+                this.maxBouyancyForce = this.CalculateMaxBouyancyForce();
             }
         }
 
@@ -118,12 +118,12 @@ namespace WaterBuoyancy
             }
         }
 
-        private Vector3 CalculateBouyancyForce()
+        private Vector3 CalculateMaxBouyancyForce()
         {
-            float objectDensityFactor = 1f / this.density;
-            Vector3 bouyancyForce = this.water.Density * this.rigidbody.mass * -Physics.gravity * objectDensityFactor;
+            float objectVolume = this.rigidbody.mass * (1f / this.density);
+            Vector3 maxBouyancyForce = this.water.Density * objectVolume * -Physics.gravity;
 
-            return bouyancyForce;
+            return maxBouyancyForce;
         }
 
         private Vector3[] CutIntoVoxels()
