@@ -66,7 +66,11 @@ namespace WaterBuoyancy
                 for (int i = 0; i < this.voxels.Length; i++)
                 {
                     Vector2 point = this.transform.TransformPoint(this.voxels[i]);
+
+                    Profiler.BeginSample("WaterLevel");
                     float waterLevel = this.water.GetWaterLevel(point);
+                    Profiler.EndSample();
+
                     float deepLevel = waterLevel - point.y + (this.minVoxelSize / 2f); // How deep is the point                    
                     float submergedFactor = Mathf.Clamp(deepLevel / this.minVoxelSize, 0f, 1f); // 0 - voxel is fully out of the water, 1 - voxel is fully submerged
                     submergedVolume += submergedFactor;
