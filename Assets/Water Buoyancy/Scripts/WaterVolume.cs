@@ -19,7 +19,7 @@ namespace WaterBuoyancy
         private Vector3[] meshLocalVertices;
         private Vector3[] meshWorldVertices;
         private List<Vector3[]> meshTrianglesInWorldSpace;
-        private Vector3[] lastCashedTrianglePolygon;
+        private Vector3[] lastCachedTrianglePolygon;
 
         public float Density
         {
@@ -64,18 +64,18 @@ namespace WaterBuoyancy
 
         public Vector3[] GetSurroundingTrianglePolygon(Vector3 point)
         {
-            if (this.lastCashedTrianglePolygon != null &&
-                MathfUtils.IsPointInTriangle(point, this.lastCashedTrianglePolygon, false, true, false))
+            if (this.lastCachedTrianglePolygon != null &&
+                MathfUtils.IsPointInTriangle(point, this.lastCachedTrianglePolygon, false, true, false))
             {
-                return this.lastCashedTrianglePolygon;
+                return this.lastCachedTrianglePolygon;
             }
 
             for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
             {
                 if (MathfUtils.IsPointInTriangle(point, this.meshTrianglesInWorldSpace[i], false, true, false))
                 {
-                    this.lastCashedTrianglePolygon = this.meshTrianglesInWorldSpace[i];
-                    return this.lastCashedTrianglePolygon;
+                    this.lastCachedTrianglePolygon = this.meshTrianglesInWorldSpace[i];
+                    return this.lastCachedTrianglePolygon;
                 }
             }
 
