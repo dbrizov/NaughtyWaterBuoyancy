@@ -16,8 +16,7 @@ namespace WaterBuoyancy
 
         [SerializeField]
         [Range(0f, 1f)]
-        [Tooltip("Normalized percentage of the object's bounds size for each axis")]
-        private float normalizedVoxelSize = 0.33f;
+        private float normalizedVoxelSize = 0.5f;
 
         [SerializeField]
         private float dragInWater = 1f;
@@ -30,10 +29,8 @@ namespace WaterBuoyancy
         private new Rigidbody rigidbody;
         private float initialDrag;
         private float initialAngularDrag;
-        private float minVoxelSize;
         private Vector3 voxelSize;
         private Vector3[] voxels;
-        private Vector3 maxBouyancyForce;
 
         protected virtual void Awake()
         {
@@ -42,12 +39,6 @@ namespace WaterBuoyancy
 
             this.initialDrag = this.rigidbody.drag;
             this.initialAngularDrag = this.rigidbody.angularDrag;
-
-            var bounds = this.collider.bounds;
-            this.voxelSize.x = this.normalizedVoxelSize * bounds.size.x;
-            this.voxelSize.y = this.normalizedVoxelSize * bounds.size.y;
-            this.voxelSize.z = this.normalizedVoxelSize * bounds.size.z;
-            this.minVoxelSize = Mathf.Min(this.voxelSize.x, this.voxelSize.y, this.voxelSize.z);
 
             if (this.calculateDensity)
             {
@@ -60,24 +51,31 @@ namespace WaterBuoyancy
         {
             if (this.water != null && this.voxels.Length > 0)
             {
-                Vector3 forceAtSingleVoxel = this.maxBouyancyForce / this.voxels.Length;
+                Vector3 forceAtSingleVoxel = this.CalculateMaxBouyancyForce() / this.voxels.Length;
+                Bounds bounds = this.collider.bounds;
+                float voxelHeight = bounds.size.y * this.normalizedVoxelSize;
 
                 float submergedVolume = 0f;
                 for (int i = 0; i < this.voxels.Length; i++)
                 {
-                    Vector2 point = this.transform.TransformPoint(this.voxels[i]);
+                    Vector3 point = this.transform.TransformPoint(this.voxels[i]);
 
                     float waterLevel = this.water.GetWaterLevel(point);
-                    float deepLevel = waterLevel - point.y + (this.minVoxelSize / 2f); // How deep is the point                    
-                    float submergedFactor = Mathf.Clamp(deepLevel / this.minVoxelSize, 0f, 1f); // 0 - voxel is fully out of the water, 1 - voxel is fully submerged
+                    float deepLevel = waterLevel - point.y + (voxelHeight / 2f); // How deep is the voxel                    
+                    float submergedFactor = Mathf.Clamp(deepLevel / voxelHeight, 0f, 1f); // 0 - voxel is fully out of the water, 1 - voxel is fully submerged
                     submergedVolume += submergedFactor;
 
-                    this.rigidbody.AddForceAtPosition(forceAtSingleVoxel * submergedFactor, point);
+                    Vector3 surfaceNormal = this.water.GetSurfaceNormal(point);
+                    Quaternion surfaceRotation = Quaternion.FromToRotation(this.water.transform.up, surfaceNormal);
+                    surfaceRotation = Quaternion.Slerp(surfaceRotation, Quaternion.identity, submergedFactor);
+
+                    Vector3 finalVoxelForce = surfaceRotation * (forceAtSingleVoxel * submergedFactor);
+                    this.rigidbody.AddForceAtPosition(finalVoxelForce, point);
+
+                    Debug.DrawLine(point, point + finalVoxelForce.normalized, Color.blue);
                 }
 
-                // 0 - object is fully out of the water
-                // 1 - object is fully submerged
-                submergedVolume /= this.voxels.Length;
+                submergedVolume /= this.voxels.Length; // 0 - object is fully out of the water, 1 - object is fully submerged
 
                 this.rigidbody.drag = Mathf.Lerp(this.initialDrag, this.dragInWater, submergedVolume);
                 this.rigidbody.angularDrag = Mathf.Lerp(this.initialAngularDrag, this.angularDragInWater, submergedVolume);
@@ -93,8 +91,6 @@ namespace WaterBuoyancy
                 {
                     this.voxels = this.CutIntoVoxels();
                 }
-
-                this.maxBouyancyForce = this.CalculateMaxBouyancyForce();
             }
         }
 
@@ -120,7 +116,7 @@ namespace WaterBuoyancy
 
         private Vector3 CalculateMaxBouyancyForce()
         {
-            float objectVolume = this.rigidbody.mass * (1f / this.density);
+            float objectVolume = this.rigidbody.mass  / this.density;
             Vector3 maxBouyancyForce = this.water.Density * objectVolume * -Physics.gravity;
 
             return maxBouyancyForce;
@@ -128,21 +124,25 @@ namespace WaterBuoyancy
 
         private Vector3[] CutIntoVoxels()
         {
-            var bounds = this.collider.bounds;
-            int xRes = Mathf.RoundToInt(bounds.size.x / this.voxelSize.x);
-            int yRes = Mathf.RoundToInt(bounds.size.y / this.voxelSize.y);
-            int zRes = Mathf.RoundToInt(bounds.size.z / this.voxelSize.z);
-            List<Vector3> voxels = new List<Vector3>(xRes * yRes * zRes);
+            Quaternion initialRotation = this.transform.rotation;
+            this.transform.rotation = Quaternion.identity;
 
-            for (int ix = 0; ix < xRes; ix++)
+            Bounds bounds = this.collider.bounds;
+            this.voxelSize.x = bounds.size.x * this.normalizedVoxelSize;
+            this.voxelSize.y = bounds.size.y * this.normalizedVoxelSize;
+            this.voxelSize.z = bounds.size.z * this.normalizedVoxelSize;
+            int voxelsCountForEachAxis = Mathf.RoundToInt(1f / this.normalizedVoxelSize);
+            List<Vector3> voxels = new List<Vector3>(voxelsCountForEachAxis * voxelsCountForEachAxis * voxelsCountForEachAxis);
+
+            for (int i = 0; i < voxelsCountForEachAxis; i++)
             {
-                for (int iy = 0; iy < yRes; iy++)
+                for (int j = 0; j < voxelsCountForEachAxis; j++)
                 {
-                    for (int iz = 0; iz < zRes; iz++)
+                    for (int k = 0; k < voxelsCountForEachAxis; k++)
                     {
-                        float pX = bounds.min.x + this.voxelSize.x * (0.5f + ix);
-                        float pY = bounds.min.y + this.voxelSize.y * (0.5f + iy);
-                        float pZ = bounds.min.z + this.voxelSize.z * (0.5f + iz);
+                        float pX = bounds.min.x + this.voxelSize.x * (0.5f + i);
+                        float pY = bounds.min.y + this.voxelSize.y * (0.5f + j);
+                        float pZ = bounds.min.z + this.voxelSize.z * (0.5f + k);
 
                         Vector3 point = new Vector3(pX, pY, pZ);
                         if (ColliderUtils.IsPointInsideCollider(point, this.collider, ref bounds))
@@ -152,6 +152,8 @@ namespace WaterBuoyancy
                     }
                 }
             }
+
+            this.transform.rotation = initialRotation;
 
             return voxels.ToArray();
         }

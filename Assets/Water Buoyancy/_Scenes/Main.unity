@@ -204,7 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   calculateDensity: 0
   density: .75
-  normalizedVoxelSize: .330000013
+  normalizedVoxelSize: .5
   dragInWater: 1
   angularDragInWater: 1
 --- !u!54 &147443383
@@ -240,7 +240,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -276,7 +278,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 375391038}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!1 &158812620
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,6 +336,7 @@ Transform:
   m_Children:
   - {fileID: 1607160491}
   - {fileID: 1902378891}
+  - {fileID: 1175566927}
   - {fileID: 147443387}
   - {fileID: 381041765}
   m_Father: {fileID: 0}
@@ -371,7 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   calculateDensity: 0
   density: .5
-  normalizedVoxelSize: .330000013
+  normalizedVoxelSize: .5
   dragInWater: 1
   angularDragInWater: 1
 --- !u!54 &381041761
@@ -419,7 +422,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -443,7 +448,7 @@ Transform:
   m_LocalScale: {x: 3, y: .249999985, z: 1}
   m_Children: []
   m_Father: {fileID: 375391038}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!1 &586437997
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,6 +525,10 @@ Prefab:
       propertyPath: debugTrans
       value: 
       objectReference: {fileID: 2039489252}
+    - target: {fileID: 11464272, guid: 780611a67e8e941a2b3aa96e5915a793, type: 2}
+      propertyPath: height
+      value: .25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 2}
   m_IsPrefabParent: 0
@@ -571,7 +580,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -644,7 +655,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -669,6 +682,114 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 865273056}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1175566926
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1175566927}
+  - 33: {fileID: 1175566932}
+  - 23: {fileID: 1175566931}
+  - 65: {fileID: 1175566930}
+  - 54: {fileID: 1175566929}
+  - 114: {fileID: 1175566928}
+  m_Layer: 0
+  m_Name: Bouyancy Cube_AlmostEqual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1175566927
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1175566926}
+  m_LocalRotation: {x: .576548874, y: -.753096521, z: .163363144, w: -.271568894}
+  m_LocalPosition: {x: -.159999996, y: 6.15999985, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 375391038}
+  m_RootOrder: 2
+--- !u!114 &1175566928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1175566926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c8a2974cd709d479a3f4742beb14f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calculateDensity: 0
+  density: .949999988
+  normalizedVoxelSize: .5
+  dragInWater: 1
+  angularDragInWater: 1
+--- !u!54 &1175566929
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1175566926}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: .0500000007
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &1175566930
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1175566926}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1175566931
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1175566926}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+--- !u!33 &1175566932
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1175566926}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1444352666
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,7 +893,7 @@ GameObject:
   - 54: {fileID: 1607160487}
   - 114: {fileID: 1607160486}
   m_Layer: 0
-  m_Name: Bouyancy Cube
+  m_Name: Bouyancy Cube_Heavy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -791,7 +912,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   calculateDensity: 0
   density: 1.10000002
-  normalizedVoxelSize: .330000013
+  normalizedVoxelSize: .5
   dragInWater: 1
   angularDragInWater: 1
 --- !u!54 &1607160487
@@ -839,7 +960,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -900,7 +1023,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -973,7 +1098,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -1046,7 +1173,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -1097,7 +1226,7 @@ GameObject:
   - 54: {fileID: 1902378887}
   - 114: {fileID: 1902378886}
   m_Layer: 0
-  m_Name: Bouyancy Cube (1)
+  m_Name: Bouyancy Cube_Equal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1116,7 +1245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   calculateDensity: 0
   density: 1
-  normalizedVoxelSize: .330000013
+  normalizedVoxelSize: .5
   dragInWater: 1
   angularDragInWater: 1
 --- !u!54 &1902378887
@@ -1164,7 +1293,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -1183,7 +1314,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1902378885}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: .153347492, y: .411793888, z: -.321201712, w: .838892043}
   m_LocalPosition: {x: -1.96000004, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

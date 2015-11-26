@@ -4,6 +4,28 @@ namespace WaterBuoyancy
 {
     public static class MathfUtils
     {
+        public static float GetAverageValue(params float[] values)
+        {
+            float sum = 0;
+            for (int i = 0; i < values.Length; i++)
+            {
+                sum += values[i];
+            }
+
+            return sum / values.Length;
+        }
+
+        public static Vector3 GetAveratePoint(params Vector3[] points)
+        {
+            Vector3 sum = Vector3.zero;
+            for (int i = 0; i < points.Length; i++)
+            {
+                sum += points[i];
+            }
+
+            return sum / points.Length;
+        }
+
         public static bool IsPointInTriangle(Vector3 point, Vector3 tp1, Vector3 tp2, Vector3 tp3)
         {
             float trueArea = CalculateArea_Triangle(tp1, tp2, tp3);
@@ -13,7 +35,7 @@ namespace WaterBuoyancy
                 CalculateArea_Triangle(point, tp2, tp3) +
                 CalculateArea_Triangle(point, tp3, tp1);
 
-            return Mathf.Abs(trueArea - checkArea) < 0.1f;
+            return Mathf.Abs(trueArea - checkArea) < 0.05f;
         }
 
         public static bool IsPointInTriangle(Vector3 point, Vector3 tp1, Vector3 tp2, Vector3 tp3, bool ignoreX, bool ignoreY, bool ignoreZ)
@@ -53,17 +75,6 @@ namespace WaterBuoyancy
         public static bool IsPointInTriangle(Vector3 point, Vector3[] triangle, bool ignoreX, bool ignoreY, bool ignoreZ)
         {
             return IsPointInTriangle(point, triangle[0], triangle[1], triangle[2], ignoreX, ignoreY, ignoreZ);
-        }
-
-        public static Vector3 GetAveragePoint(params Vector3[] points)
-        {
-            Vector3 sum = Vector3.zero;
-            for (int i = 0; i < points.Length; i++)
-            {
-                sum += points[i];
-            }
-
-            return sum / points.Length;
         }
 
         public static float CalculateArea_Triangle(Vector3 p1, Vector3 p2, Vector3 p3)

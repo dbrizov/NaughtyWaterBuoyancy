@@ -79,7 +79,7 @@ namespace WaterBuoyancy
                 }
             }
 
-            throw new System.ArgumentException("Point not in the water", "point");
+            return null;
         }
 
         public Vector3[] GetClosestPointsOnWaterSurface(Vector3 point, int pointsCount)
@@ -99,32 +99,47 @@ namespace WaterBuoyancy
             return closest;
         }
 
-        private bool IsPointUnderWater(Vector3 point)
+        public Vector3 GetSurfaceNormal(Vector3 point)
         {
-            return this.GetWaterLevel(point) - point.y > 0f;
+            Vector3[] meshPolygon = this.GetSurroundingTrianglePolygon(point);
+            if (meshPolygon != null)
+            {
+                Vector3 planeV1 = meshPolygon[1] - meshPolygon[0];
+                Vector3 planeV2 = meshPolygon[2] - meshPolygon[0];
+                Vector3 planeNormal = Vector3.Cross(planeV1, planeV2).normalized;
+
+                return planeNormal;
+            }
+
+            return this.transform.up;
         }
 
         public float GetWaterLevel(Vector3 point)
         {
             Vector3[] meshPolygon = this.GetSurroundingTrianglePolygon(point);
-
-            Vector3 planeV1 = meshPolygon[1] - meshPolygon[0];
-            Vector3 planeV2 = meshPolygon[2] - meshPolygon[0];
-            Vector3 planeNormal = Vector3.Cross(planeV1, planeV2).normalized;
-            if (planeNormal.y < 0f)
+            if (meshPolygon != null)
             {
-                planeNormal *= -1f;
+                Vector3 planeV1 = meshPolygon[1] - meshPolygon[0];
+                Vector3 planeV2 = meshPolygon[2] - meshPolygon[0];
+                Vector3 planeNormal = Vector3.Cross(planeV1, planeV2).normalized;
+                if (planeNormal.y < 0f)
+                {
+                    planeNormal *= -1f;
+                }
+
+                float yOnWaterSurface = (-(point.x * planeNormal.x) - (point.z * planeNormal.z) + Vector3.Dot(meshPolygon[0], planeNormal)) / planeNormal.y;
+                //Vector3 pointOnWaterSurface = new Vector3(point.x, yOnWaterSurface, point.z);
+                //DebugUtils.DrawPoint(pointOnWaterSurface, Color.magenta);
+
+                return yOnWaterSurface;
             }
 
-            float yOnWaterSurface = (-(point.x * planeNormal.x) - (point.z * planeNormal.z) + Vector3.Dot(meshPolygon[0], planeNormal)) / planeNormal.y;
-            //Vector3 pointOnWaterSurface = new Vector3(point.x, yOnWaterSurface, point.z);
-            //DebugUtils.DrawPoint(pointOnWaterSurface, Color.magenta);
-            //Debug.DrawLine(pointOnWaterSurface, pointOnWaterSurface + planeNormal, Color.blue);
-            //Debug.DrawLine(pointOnWaterSurface, meshPoligon[0], Color.green);
-            //Debug.DrawLine(pointOnWaterSurface, meshPoligon[1], Color.green);
-            //Debug.DrawLine(pointOnWaterSurface, meshPoligon[2], Color.green);
+            return this.transform.position.y;
+        }
 
-            return yOnWaterSurface;
+        public bool IsPointUnderWater(Vector3 point)
+        {
+            return this.GetWaterLevel(point) - point.y > 0f;
         }
 
         private void CacheMeshVertices()
