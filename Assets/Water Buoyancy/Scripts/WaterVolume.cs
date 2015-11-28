@@ -22,8 +22,8 @@ namespace WaterBuoyancy
         [SerializeField]
         private float quadSegmentSize = 1f;
 
-        [SerializeField]
-        private Transform debugTrans; // Only for debugging
+        //[SerializeField]
+        //private Transform debugTrans; // Only for debugging
 
         private Mesh mesh;
         private Vector3[] meshLocalVertices;
@@ -132,22 +132,22 @@ namespace WaterBuoyancy
                 //    }
                 //}
 
-                if (debugTrans != null)
-                {
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawSphere(debugTrans.position, 0.1f);
+                //if (debugTrans != null)
+                //{
+                //    Gizmos.color = Color.blue;
+                //    Gizmos.DrawSphere(debugTrans.position, 0.1f);
 
-                    var point = debugTrans.position;
-                    var triangle = this.GetSurroundingTrianglePolygon(point);
-                    if (triangle != null)
-                    {
-                        Gizmos.color = Color.red;
+                //    var point = debugTrans.position;
+                //    var triangle = this.GetSurroundingTrianglePolygon(point);
+                //    if (triangle != null)
+                //    {
+                //        Gizmos.color = Color.red;
 
-                        Gizmos.DrawLine(triangle[0], triangle[1]);
-                        Gizmos.DrawLine(triangle[1], triangle[2]);
-                        Gizmos.DrawLine(triangle[2], triangle[0]);
-                    }
-                }
+                //        Gizmos.DrawLine(triangle[0], triangle[1]);
+                //        Gizmos.DrawLine(triangle[1], triangle[2]);
+                //        Gizmos.DrawLine(triangle[2], triangle[0]);
+                //    }
+                //}
             }
         }
 

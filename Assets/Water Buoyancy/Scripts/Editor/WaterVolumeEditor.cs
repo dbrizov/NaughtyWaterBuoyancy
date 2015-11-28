@@ -13,14 +13,14 @@ namespace WaterBuoyancy
         private SerializedProperty rows;
         private SerializedProperty columns;
         private SerializedProperty quadSegmentSize;
-        private SerializedProperty debugTrans;
+        //private SerializedProperty debugTrans;
 
-        //[MenuItem("Water Bouyancy/Create Water Mesh")]
-        //private static void CreateMesh()
-        //{
-        //    Mesh mesh = WaterMeshGenerator.GenerateMesh(5, 5, 1f);
-        //    AssetDatabase.CreateAsset(mesh, "Assets/Water Buoyancy/Models/Water Mesh.asset");
-        //}
+        [MenuItem("Water Bouyancy/Create Water Mesh")]
+        private static void CreateMesh()
+        {
+            Mesh mesh = WaterMeshGenerator.GenerateMesh(5, 5, 1f);
+            AssetDatabase.CreateAsset(mesh, "Assets/Water Buoyancy/Models/Water Mesh.asset");
+        }
 
         protected virtual void OnEnable()
         {
@@ -30,7 +30,7 @@ namespace WaterBuoyancy
             this.rows = this.serializedObject.FindProperty("rows");
             this.columns = this.serializedObject.FindProperty("columns");
             this.quadSegmentSize = this.serializedObject.FindProperty("quadSegmentSize");
-            this.debugTrans = this.serializedObject.FindProperty("debugTrans");
+            //this.debugTrans = this.serializedObject.FindProperty("debugTrans");
 
             Undo.undoRedoPerformed += this.OnUndoRedoPerformed;
         }
@@ -60,7 +60,7 @@ namespace WaterBuoyancy
                 this.UpdateBoxCollider(this.rows.intValue, this.columns.intValue, this.quadSegmentSize.floatValue);
             }
 
-            EditorGUILayout.PropertyField(this.debugTrans);
+            //EditorGUILayout.PropertyField(this.debugTrans);
 
             this.serializedObject.ApplyModifiedProperties();
         }

@@ -11,7 +11,7 @@ namespace WaterBuoyancy
         private float height = 0.2f;
 
         [SerializeField]
-        private float noiseWalk = 0f;
+        private float noiseWalk = 0.5f;
 
         [SerializeField]
         private float noiseStrength = 0.1f;
