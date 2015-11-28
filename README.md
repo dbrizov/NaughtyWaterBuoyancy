@@ -13,7 +13,7 @@ Unity 5.1 or later versions. Feel free to try older version
 
 You can use the ready to go prefabs (**WaterPro_DayTime** and **WaterPro_NightTime**). <br>
 They are both located in the Prefabs folder. The only difference between the two
-is that they use different shaders for daylight and moonlight. <br><br>
+is that they use different shaders for daylight and moonlight. <br>
 
 The two important scripts are **WaterVolume.cs** and **FloatingObject.cs**. <br>
 The water volume applies buoyancy forces only to floating objects.
@@ -21,7 +21,7 @@ The floating is just like in real life physics. If an object has density lesser 
 the density of the water, it will float. If the object has greater density than
 the density of the water, it will sink. If for example an object has density equal
 to half the density of the water, then the object will submerge exactly half of its volume.
-The other half of the volume will be above the water. For more info see this [Buoyancy Reference](http://scienceprimer.com/buoyancy) <br> <br>
+The other half of the volume will be above the water. For more info see this [Buoyancy Reference](http://scienceprimer.com/buoyancy) <br>
 
 The **WaterVolume.cs** script works only with the procedural Mesh in the project due to performance optimizations.
 
