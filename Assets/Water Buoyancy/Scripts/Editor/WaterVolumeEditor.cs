@@ -6,6 +6,8 @@ namespace WaterBuoyancy
     [CustomEditor(typeof(WaterVolume))]
     public class WaterVolumeEditor : Editor
     {
+        private const float BOX_COLLIDER_HEIGHT = 5f;
+
         private WaterVolume waterVolumeTarget;
         private SerializedProperty density;
         private SerializedProperty rows;
@@ -55,6 +57,7 @@ namespace WaterBuoyancy
                 this.quadSegmentSize.floatValue = Mathf.Max(0f, this.quadSegmentSize.floatValue);
 
                 this.UpdateMesh(this.rows.intValue, this.columns.intValue, this.quadSegmentSize.floatValue);
+                this.UpdateBoxCollider(this.rows.intValue, this.columns.intValue, this.quadSegmentSize.floatValue);
             }
 
             EditorGUILayout.PropertyField(this.debugTrans);
@@ -64,6 +67,11 @@ namespace WaterBuoyancy
 
         private void UpdateMesh(int rows, int columns, float quadSegmentSize)
         {
+            if (Application.isPlaying)
+            {
+                return;
+            }
+
             MeshFilter meshFilter = this.waterVolumeTarget.GetComponent<MeshFilter>();
             Mesh oldMesh = meshFilter.sharedMesh;
 
@@ -80,9 +88,26 @@ namespace WaterBuoyancy
             }
         }
 
+        private void UpdateBoxCollider(int rows, int columns, float quadSegmentSize)
+        {
+            var boxCollider = this.waterVolumeTarget.GetComponent<BoxCollider>();
+            if (boxCollider != null)
+            {
+                Vector3 size = new Vector3(columns * quadSegmentSize, BOX_COLLIDER_HEIGHT, rows * quadSegmentSize);
+                boxCollider.size = size;
+
+                Vector3 center = size / 2f;
+                center.y *= -1f;
+                boxCollider.center = center;
+
+                EditorUtility.SetDirty(boxCollider);
+            }
+        }
+
         private void OnUndoRedoPerformed()
         {
             this.UpdateMesh(this.waterVolumeTarget.Rows, this.waterVolumeTarget.Columns, this.waterVolumeTarget.QuadSegmentSize);
+            this.UpdateBoxCollider(this.waterVolumeTarget.Rows, this.waterVolumeTarget.Columns, this.waterVolumeTarget.QuadSegmentSize);
         }
     }
 }

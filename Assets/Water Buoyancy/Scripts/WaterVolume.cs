@@ -88,13 +88,33 @@ namespace WaterBuoyancy
             this.CacheMeshTrianglesInWorldSpace();
         }
 
+        protected virtual void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.matrix = this.transform.localToWorldMatrix;
+
+            Gizmos.DrawWireCube(this.GetComponent<BoxCollider>().center, this.GetComponent<BoxCollider>().size);
+        }
+
         protected virtual void OnDrawGizmos()
         {
+            if (!Application.isPlaying)
+            {
+                Gizmos.color = Color.cyan - new Color(0f, 0f, 0f, 0.75f);
+                Gizmos.matrix = this.transform.localToWorldMatrix;
+
+                Gizmos.DrawCube(this.GetComponent<BoxCollider>().center - Vector3.up * 0.01f, this.GetComponent<BoxCollider>().size);
+
+                Gizmos.color = Color.cyan - new Color(0f, 0f, 0f, 0.5f);
+                Gizmos.DrawWireCube(this.GetComponent<BoxCollider>().center, this.GetComponent<BoxCollider>().size);
+            }
+
             if (this.meshTrianglesInWorldSpace == null)
             {
                 return;
             }
 
+            Gizmos.matrix = Matrix4x4.identity;
             if (debugTrans != null)
             {
                 Gizmos.color = Color.blue;
@@ -113,13 +133,13 @@ namespace WaterBuoyancy
                 }
             }
 
-            if (this.meshWorldVertices != null)
-            {
-                for (int i = 0; i < this.meshWorldVertices.Length; i++)
-                {
-                    DebugUtils.DrawPoint(this.meshWorldVertices[i], Color.red);
-                }
-            }
+            //if (this.meshWorldVertices != null)
+            //{
+            //    for (int i = 0; i < this.meshWorldVertices.Length; i++)
+            //    {
+            //        DebugUtils.DrawPoint(this.meshWorldVertices[i], Color.red);
+            //    }
+            //}
         }
 
         public Vector3[] GetSurroundingTrianglePolygon(Vector3 point)
