@@ -28,8 +28,6 @@ namespace WaterBuoyancy
         private Mesh mesh;
         private Vector3[] meshLocalVertices;
         private Vector3[] meshWorldVertices;
-        private List<Vector3[]> meshTrianglesInWorldSpace;
-        private Vector3[] lastCachedTrianglePolygon;
 
         public float Density
         {
@@ -79,13 +77,11 @@ namespace WaterBuoyancy
         protected virtual void Awake()
         {
             this.CacheMeshVertices();
-            this.CacheMeshTrianglesInWorldSpace();
         }
 
         protected virtual void Update()
         {
             this.CacheMeshVertices();
-            this.CacheMeshTrianglesInWorldSpace();
         }
 
         protected virtual void OnDrawGizmosSelected()
@@ -107,64 +103,84 @@ namespace WaterBuoyancy
 
                 Gizmos.color = Color.cyan - new Color(0f, 0f, 0f, 0.5f);
                 Gizmos.DrawWireCube(this.GetComponent<BoxCollider>().center, this.GetComponent<BoxCollider>().size);
+
+                Gizmos.matrix = Matrix4x4.identity;
             }
-
-            if (this.meshTrianglesInWorldSpace == null)
+            else
             {
-                return;
-            }
+                //var vertices = this.meshWorldVertices;
+                //var triangles = this.Mesh.triangles;
+                //for (int i = 0; i < triangles.Length; i += 3)
+                //{
+                //    Gizmos.color = Color.white;
+                //    Gizmos.DrawLine(vertices[triangles[i + 0]], vertices[triangles[i + 1]]);
+                //    Gizmos.DrawLine(vertices[triangles[i + 1]], vertices[triangles[i + 2]]);
+                //    Gizmos.DrawLine(vertices[triangles[i + 2]], vertices[triangles[i + 0]]);
 
-            Gizmos.matrix = Matrix4x4.identity;
-            if (debugTrans != null)
-            {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(debugTrans.position, 0.1f);
+                //    Vector3 center = MathfUtils.GetAveratePoint(vertices[triangles[i + 0]], vertices[triangles[i + 1]], vertices[triangles[i + 2]]);
+                //    Vector3 normal = this.GetSurfaceNormal(center);
 
-                for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
+                //    Gizmos.color = Color.green;
+                //    Gizmos.DrawLine(center, center + normal);
+                //}
+
+                //if (this.meshWorldVertices != null)
+                //{
+                //    for (int i = 0; i < this.meshWorldVertices.Length; i++)
+                //    {
+                //        DebugUtils.DrawPoint(this.meshWorldVertices[i], Color.red);
+                //    }
+                //}
+
+                if (debugTrans != null)
                 {
-                    if (MathfUtils.IsPointInTriangle(debugTrans.position, this.meshTrianglesInWorldSpace[i], false, true, false))
-                    {
-                        Gizmos.color = Color.green;
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawSphere(debugTrans.position, 0.1f);
 
-                        Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][0], this.meshTrianglesInWorldSpace[i][1]);
-                        Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][1], this.meshTrianglesInWorldSpace[i][2]);
-                        Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][2], this.meshTrianglesInWorldSpace[i][0]);
+                    var point = debugTrans.position;
+                    var triangle = this.GetSurroundingTrianglePolygon(point);
+                    if (triangle != null)
+                    {
+                        Gizmos.color = Color.red;
+
+                        Gizmos.DrawLine(triangle[0], triangle[1]);
+                        Gizmos.DrawLine(triangle[1], triangle[2]);
+                        Gizmos.DrawLine(triangle[2], triangle[0]);
                     }
                 }
             }
-
-            //if (this.meshWorldVertices != null)
-            //{
-            //    for (int i = 0; i < this.meshWorldVertices.Length; i++)
-            //    {
-            //        DebugUtils.DrawPoint(this.meshWorldVertices[i], Color.red);
-            //    }
-            //}
         }
 
-        public Vector3[] GetSurroundingTrianglePolygon(Vector3 point)
+        public Vector3[] GetSurroundingTrianglePolygon(Vector3 worldPoint)
         {
-            if (this.lastCachedTrianglePolygon != null &&
-                MathfUtils.IsPointInTriangle(point, this.lastCachedTrianglePolygon, false, true, false))
+            Vector3 localPoint = this.transform.InverseTransformPoint(worldPoint);
+            int x = Mathf.CeilToInt(localPoint.x);
+            int z = Mathf.CeilToInt(localPoint.z);
+            if (x <= 0 || z <= 0 || x >= (this.Columns + 1) || z >= (this.Rows + 1))
             {
-                return this.lastCachedTrianglePolygon;
+                return null;
             }
 
-            for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
+            Vector3[] trianglePolygon = new Vector3[3];
+            if ((worldPoint - this.meshWorldVertices[this.GetIndex(z, x)]).sqrMagnitude <
+                ((worldPoint - this.meshWorldVertices[this.GetIndex(z - 1, x - 1)]).sqrMagnitude))
             {
-                if (MathfUtils.IsPointInTriangle(point, this.meshTrianglesInWorldSpace[i], false, true, false))
-                {
-                    this.lastCachedTrianglePolygon = this.meshTrianglesInWorldSpace[i];
-                    return this.lastCachedTrianglePolygon;
-                }
+                trianglePolygon[0] = this.meshWorldVertices[this.GetIndex(z, x)];
+            }
+            else
+            {
+                trianglePolygon[0] = this.meshWorldVertices[this.GetIndex(z - 1, x - 1)];
             }
 
-            return null;
+            trianglePolygon[1] = this.meshWorldVertices[this.GetIndex(z - 1, x)];
+            trianglePolygon[2] = this.meshWorldVertices[this.GetIndex(z, x - 1)];
+
+            return trianglePolygon;
         }
 
-        public Vector3[] GetClosestPointsOnWaterSurface(Vector3 point, int pointsCount)
+        public Vector3[] GetClosestPointsOnWaterSurface(Vector3 worldPoint, int pointsCount)
         {
-            MinHeap<Vector3> allPoints = new MinHeap<Vector3>(new Vector3HorizontalDistanceComparer(point));
+            MinHeap<Vector3> allPoints = new MinHeap<Vector3>(new Vector3HorizontalDistanceComparer(worldPoint));
             for (int i = 0; i < this.meshWorldVertices.Length; i++)
             {
                 allPoints.Add(this.meshWorldVertices[i]);
@@ -179,24 +195,9 @@ namespace WaterBuoyancy
             return closest;
         }
 
-        public Vector3 GetSurfaceNormal(Vector3 point)
+        public Vector3 GetSurfaceNormal(Vector3 worldPoint)
         {
-            Vector3[] meshPolygon = this.GetSurroundingTrianglePolygon(point);
-            if (meshPolygon != null)
-            {
-                Vector3 planeV1 = meshPolygon[1] - meshPolygon[0];
-                Vector3 planeV2 = meshPolygon[2] - meshPolygon[0];
-                Vector3 planeNormal = Vector3.Cross(planeV1, planeV2).normalized;
-
-                return planeNormal;
-            }
-
-            return this.transform.up;
-        }
-
-        public float GetWaterLevel(Vector3 point)
-        {
-            Vector3[] meshPolygon = this.GetSurroundingTrianglePolygon(point);
+            Vector3[] meshPolygon = this.GetSurroundingTrianglePolygon(worldPoint);
             if (meshPolygon != null)
             {
                 Vector3 planeV1 = meshPolygon[1] - meshPolygon[0];
@@ -207,7 +208,26 @@ namespace WaterBuoyancy
                     planeNormal *= -1f;
                 }
 
-                float yOnWaterSurface = (-(point.x * planeNormal.x) - (point.z * planeNormal.z) + Vector3.Dot(meshPolygon[0], planeNormal)) / planeNormal.y;
+                return planeNormal;
+            }
+
+            return this.transform.up;
+        }
+
+        public float GetWaterLevel(Vector3 worldPoint)
+        {
+            Vector3[] meshPolygon = this.GetSurroundingTrianglePolygon(worldPoint);
+            if (meshPolygon != null)
+            {
+                Vector3 planeV1 = meshPolygon[1] - meshPolygon[0];
+                Vector3 planeV2 = meshPolygon[2] - meshPolygon[0];
+                Vector3 planeNormal = Vector3.Cross(planeV1, planeV2).normalized;
+                if (planeNormal.y < 0f)
+                {
+                    planeNormal *= -1f;
+                }
+
+                float yOnWaterSurface = (-(worldPoint.x * planeNormal.x) - (worldPoint.z * planeNormal.z) + Vector3.Dot(meshPolygon[0], planeNormal)) / planeNormal.y;
                 //Vector3 pointOnWaterSurface = new Vector3(point.x, yOnWaterSurface, point.z);
                 //DebugUtils.DrawPoint(pointOnWaterSurface, Color.magenta);
 
@@ -217,9 +237,14 @@ namespace WaterBuoyancy
             return this.transform.position.y;
         }
 
-        public bool IsPointUnderWater(Vector3 point)
+        public bool IsPointUnderWater(Vector3 worldPoint)
         {
-            return this.GetWaterLevel(point) - point.y > 0f;
+            return this.GetWaterLevel(worldPoint) - worldPoint.y > 0f;
+        }
+
+        private int GetIndex(int row, int column)
+        {
+            return row * (this.Columns + 1) + column;
         }
 
         private void CacheMeshVertices()
@@ -228,32 +253,12 @@ namespace WaterBuoyancy
             this.meshWorldVertices = this.ConvertPointsToWorldSpace(meshLocalVertices);
         }
 
-        private void CacheMeshTrianglesInWorldSpace()
+        private Vector3[] ConvertPointsToWorldSpace(Vector3[] localPoints)
         {
-            int[] triangles = this.Mesh.triangles;
-            if (this.meshTrianglesInWorldSpace == null)
+            Vector3[] worldPoints = new Vector3[localPoints.Length];
+            for (int i = 0; i < localPoints.Length; i++)
             {
-                this.meshTrianglesInWorldSpace = new List<Vector3[]>(triangles.Length / 3);
-                for (int i = 0; i < triangles.Length; i += 3)
-                {
-                    this.meshTrianglesInWorldSpace.Add(new Vector3[3]);
-                }
-            }
-
-            for (int i = 0; i < triangles.Length; i += 3)
-            {
-                this.meshTrianglesInWorldSpace[i / 3][0] = this.meshWorldVertices[triangles[i]];
-                this.meshTrianglesInWorldSpace[i / 3][1] = this.meshWorldVertices[triangles[i + 1]];
-                this.meshTrianglesInWorldSpace[i / 3][2] = this.meshWorldVertices[triangles[i + 2]];
-            }
-        }
-
-        private Vector3[] ConvertPointsToWorldSpace(Vector3[] points)
-        {
-            Vector3[] worldPoints = new Vector3[points.Length];
-            for (int i = 0; i < points.Length; i++)
-            {
-                worldPoints[i] = this.transform.TransformPoint(points[i]);
+                worldPoints[i] = this.transform.TransformPoint(localPoints[i]);
             }
 
             return worldPoints;

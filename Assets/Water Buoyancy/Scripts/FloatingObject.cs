@@ -58,21 +58,21 @@ namespace WaterBuoyancy
                 float submergedVolume = 0f;
                 for (int i = 0; i < this.voxels.Length; i++)
                 {
-                    Vector3 point = this.transform.TransformPoint(this.voxels[i]);
-
-                    float waterLevel = this.water.GetWaterLevel(point);
-                    float deepLevel = waterLevel - point.y + (voxelHeight / 2f); // How deep is the voxel                    
+                    Vector3 worldPoint = this.transform.TransformPoint(this.voxels[i]);
+                    
+                    float waterLevel = this.water.GetWaterLevel(worldPoint);
+                    float deepLevel = waterLevel - worldPoint.y + (voxelHeight / 2f); // How deep is the voxel                    
                     float submergedFactor = Mathf.Clamp(deepLevel / voxelHeight, 0f, 1f); // 0 - voxel is fully out of the water, 1 - voxel is fully submerged
                     submergedVolume += submergedFactor;
 
-                    Vector3 surfaceNormal = this.water.GetSurfaceNormal(point);
+                    Vector3 surfaceNormal = this.water.GetSurfaceNormal(worldPoint);
                     Quaternion surfaceRotation = Quaternion.FromToRotation(this.water.transform.up, surfaceNormal);
                     surfaceRotation = Quaternion.Slerp(surfaceRotation, Quaternion.identity, submergedFactor);
 
                     Vector3 finalVoxelForce = surfaceRotation * (forceAtSingleVoxel * submergedFactor);
-                    this.rigidbody.AddForceAtPosition(finalVoxelForce, point);
+                    this.rigidbody.AddForceAtPosition(finalVoxelForce, worldPoint);
 
-                    Debug.DrawLine(point, point + finalVoxelForce.normalized, Color.blue);
+                    Debug.DrawLine(worldPoint, worldPoint + finalVoxelForce.normalized, Color.blue);
                 }
 
                 submergedVolume /= this.voxels.Length; // 0 - object is fully out of the water, 1 - object is fully submerged

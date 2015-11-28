@@ -35,7 +35,7 @@ namespace WaterBuoyancy
                 CalculateArea_Triangle(point, tp2, tp3) +
                 CalculateArea_Triangle(point, tp3, tp1);
 
-            return Mathf.Abs(trueArea - checkArea) < 0.05f;
+            return Mathf.Abs(trueArea - checkArea) < 0.01f;
         }
 
         public static bool IsPointInTriangle(Vector3 point, Vector3 tp1, Vector3 tp2, Vector3 tp3, bool ignoreX, bool ignoreY, bool ignoreZ)

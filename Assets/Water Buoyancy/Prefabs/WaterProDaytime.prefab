@@ -126,9 +126,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   density: 1
-  rows: 40
-  columns: 40
-  quadSegmentSize: .5
+  rows: 20
+  columns: 20
+  quadSegmentSize: 1
   debugTrans: {fileID: 0}
 --- !u!114 &11464272
 MonoBehaviour:
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4e9958e78383848bd557dc9ae0eeb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 1
   height: .200000003
   noiseWalk: 0
   noiseStrength: .100000001
