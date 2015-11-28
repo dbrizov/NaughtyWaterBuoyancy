@@ -108,6 +108,7 @@ namespace WaterBuoyancy
             }
             else
             {
+                // Draw sufrace normal
                 //var vertices = this.meshWorldVertices;
                 //var triangles = this.Mesh.triangles;
                 //for (int i = 0; i < triangles.Length; i += 3)
@@ -124,6 +125,7 @@ namespace WaterBuoyancy
                 //    Gizmos.DrawLine(center, center + normal);
                 //}
 
+                // Draw mesh vertices
                 //if (this.meshWorldVertices != null)
                 //{
                 //    for (int i = 0; i < this.meshWorldVertices.Length; i++)

@@ -15,8 +15,8 @@ namespace WaterBuoyancy
                 throw new System.ArgumentException("Invalid water mesh data");
             }
 
-            rows = _rows + 1;
-            columns = _columns + 1;
+            rows = _rows + 1; // There are 2 rows between 3 points, so we need to add 1
+            columns = _columns + 1; // Same here
             quadSegmentSize = _quadSegmentSize;
 
             var mesh = new Mesh();
