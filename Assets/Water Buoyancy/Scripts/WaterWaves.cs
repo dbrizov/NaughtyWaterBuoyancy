@@ -10,6 +10,12 @@ namespace WaterBuoyancy
         [SerializeField]
         private float height = 0.2f;
 
+        [SerializeField]
+        private float noiseWalk = 0f;
+
+        [SerializeField]
+        private float noiseStrength = 0.1f;
+
         private Mesh mesh;
         private Vector3[] baseVertices;
         private Vector3[] vertices;
@@ -35,6 +41,8 @@ namespace WaterBuoyancy
                     Mathf.Sin(Time.time * this.speed + this.baseVertices[i].x + this.baseVertices[i].y + this.baseVertices[i].z) * 
                     (this.height / this.transform.localScale.y);
 
+                vertex.y += Mathf.PerlinNoise(baseVertices[i].x + this.noiseWalk, baseVertices[i].y /*+ Mathf.Sin(Time.time * 0.1f)*/) * this.noiseStrength;
+
                 this.vertices[i] = vertex;
             }
 
@@ -49,7 +57,7 @@ namespace WaterBuoyancy
             {
                 Vector3 center = boxCollider.center;
                 center.y = boxCollider.size.y / -2f;
-                center.y += this.height / this.transform.localScale.y;
+                center.y += (this.height + this.noiseStrength) / this.transform.localScale.y;
 
                 boxCollider.center = center;
             }

@@ -51,6 +51,14 @@ namespace WaterBuoyancy
                         meshData.TriangleIndices[triangleIndex + 4] = GetIndex(r + 1, c + 1);
                         meshData.TriangleIndices[triangleIndex + 5] = GetIndex(r, c + 1);
 
+                        //meshData.TriangleIndices[triangleIndex + 0] = GetIndex(r + 1, c + 1);
+                        //meshData.TriangleIndices[triangleIndex + 1] = GetIndex(r, c + 1);
+                        //meshData.TriangleIndices[triangleIndex + 2] = GetIndex(r, c);
+
+                        //meshData.TriangleIndices[triangleIndex + 3] = GetIndex(r, c);
+                        //meshData.TriangleIndices[triangleIndex + 4] = GetIndex(r + 1, c);
+                        //meshData.TriangleIndices[triangleIndex + 5] = GetIndex(r + 1, c + 1);
+
                         triangleIndex += 6;
                     }
                 }
