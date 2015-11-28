@@ -5,12 +5,22 @@ using WaterBuoyancy.Collections;
 namespace WaterBuoyancy
 {
     [RequireComponent(typeof(BoxCollider))]
+    [RequireComponent(typeof(MeshFilter))]
     public class WaterVolume : MonoBehaviour
     {
         public const string TAG = "Water Volume";
 
         [SerializeField]
         private float density = 1f;
+
+        [SerializeField]
+        private int rows = 10;
+
+        [SerializeField]
+        private int columns = 10;
+
+        [SerializeField]
+        private float quadSegmentSize = 1f;
 
         [SerializeField]
         private Transform debugTrans; // Only for debugging
@@ -23,12 +33,51 @@ namespace WaterBuoyancy
 
         public float Density
         {
-            get { return this.density; }
+            get
+            {
+                return this.density;
+            }
+        }
+
+        public int Rows
+        {
+            get
+            {
+                return this.rows;
+            }
+        }
+
+        public int Columns
+        {
+            get
+            {
+                return this.columns;
+            }
+        }
+
+        public float QuadSegmentSize
+        {
+            get
+            {
+                return this.quadSegmentSize;
+            }
+        }
+
+        public Mesh Mesh
+        {
+            get
+            {
+                if (this.mesh == null)
+                {
+                    this.mesh = this.GetComponent<MeshFilter>().mesh;
+                }
+
+                return this.mesh;
+            }
         }
 
         protected virtual void Awake()
         {
-            this.mesh = this.GetComponent<MeshFilter>().mesh;
             this.CacheMeshVertices();
             this.CacheMeshTrianglesInWorldSpace();
         }
@@ -46,18 +95,29 @@ namespace WaterBuoyancy
                 return;
             }
 
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(debugTrans.position, 0.1f);
-
-            for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
+            if (debugTrans != null)
             {
-                if (MathfUtils.IsPointInTriangle(debugTrans.position, this.meshTrianglesInWorldSpace[i], false, true, false))
-                {
-                    Gizmos.color = Color.green;
+                Gizmos.color = Color.blue;
+                Gizmos.DrawSphere(debugTrans.position, 0.1f);
 
-                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][0], this.meshTrianglesInWorldSpace[i][1]);
-                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][1], this.meshTrianglesInWorldSpace[i][2]);
-                    Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][2], this.meshTrianglesInWorldSpace[i][0]);
+                for (int i = 0; i < this.meshTrianglesInWorldSpace.Count; i++)
+                {
+                    if (MathfUtils.IsPointInTriangle(debugTrans.position, this.meshTrianglesInWorldSpace[i], false, true, false))
+                    {
+                        Gizmos.color = Color.green;
+
+                        Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][0], this.meshTrianglesInWorldSpace[i][1]);
+                        Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][1], this.meshTrianglesInWorldSpace[i][2]);
+                        Gizmos.DrawLine(this.meshTrianglesInWorldSpace[i][2], this.meshTrianglesInWorldSpace[i][0]);
+                    }
+                }
+            }
+
+            if (this.meshWorldVertices != null)
+            {
+                for (int i = 0; i < this.meshWorldVertices.Length; i++)
+                {
+                    DebugUtils.DrawPoint(this.meshWorldVertices[i], Color.red);
                 }
             }
         }
@@ -144,13 +204,13 @@ namespace WaterBuoyancy
 
         private void CacheMeshVertices()
         {
-            this.meshLocalVertices = this.mesh.vertices;
+            this.meshLocalVertices = this.Mesh.vertices;
             this.meshWorldVertices = this.ConvertPointsToWorldSpace(meshLocalVertices);
         }
 
         private void CacheMeshTrianglesInWorldSpace()
         {
-            int[] triangles = this.mesh.triangles;
+            int[] triangles = this.Mesh.triangles;
             if (this.meshTrianglesInWorldSpace == null)
             {
                 this.meshTrianglesInWorldSpace = new List<Vector3[]>(triangles.Length / 3);
