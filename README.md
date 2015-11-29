@@ -17,9 +17,10 @@ is that they use different shaders for daylight and moonlight. <br>
 
 The two important scripts are **WaterVolume.cs** and **FloatingObject.cs**. <br>
 The water volume applies buoyancy forces only to floating objects.
+The water volume needs to have a tag **Water Volume** in order for the floating objects to detect collisions with the water.
 The floating is just like in real life physics. If an object has density lesser than
-the density of the water, it will float. If the object has greater density than
-the density of the water, it will sink. If for example an object has density equal
+the density of the water, it will float. If an object has greater density than
+the that of the water, it will sink. If for example an object has density equal
 to half the density of the water, then the object will submerge exactly half of its volume.
 The other half of the volume will be above the water. For more info see this [Buoyancy Reference](http://scienceprimer.com/buoyancy) <br>
 

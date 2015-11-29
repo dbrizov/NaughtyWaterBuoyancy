@@ -26,7 +26,7 @@ namespace WaterBuoyancy
             return sum / points.Length;
         }
 
-        public static bool IsPointInTriangle(Vector3 point, Vector3 tp1, Vector3 tp2, Vector3 tp3)
+        public static bool IsPointInsideTriangle(Vector3 point, Vector3 tp1, Vector3 tp2, Vector3 tp3)
         {
             float trueArea = CalculateArea_Triangle(tp1, tp2, tp3);
 
@@ -38,7 +38,7 @@ namespace WaterBuoyancy
             return Mathf.Abs(trueArea - checkArea) < 0.01f;
         }
 
-        public static bool IsPointInTriangle(Vector3 point, Vector3 tp1, Vector3 tp2, Vector3 tp3, bool ignoreX, bool ignoreY, bool ignoreZ)
+        public static bool IsPointInsideTriangle(Vector3 point, Vector3 tp1, Vector3 tp2, Vector3 tp3, bool ignoreX, bool ignoreY, bool ignoreZ)
         {
             if (ignoreX)
             {
@@ -64,17 +64,17 @@ namespace WaterBuoyancy
                 tp3.z = 0f;
             }
 
-            return IsPointInTriangle(point, tp1, tp2, tp3);
+            return IsPointInsideTriangle(point, tp1, tp2, tp3);
         }
 
-        public static bool IsPointInTriangle(Vector3 point, Vector3[] triangle)
+        public static bool IsPointInsideTriangle(Vector3 point, Vector3[] triangle)
         {
-            return IsPointInTriangle(point, triangle[0], triangle[1], triangle[2]);
+            return IsPointInsideTriangle(point, triangle[0], triangle[1], triangle[2]);
         }
 
-        public static bool IsPointInTriangle(Vector3 point, Vector3[] triangle, bool ignoreX, bool ignoreY, bool ignoreZ)
+        public static bool IsPointInsideTriangle(Vector3 point, Vector3[] triangle, bool ignoreX, bool ignoreY, bool ignoreZ)
         {
-            return IsPointInTriangle(point, triangle[0], triangle[1], triangle[2], ignoreX, ignoreY, ignoreZ);
+            return IsPointInsideTriangle(point, triangle[0], triangle[1], triangle[2], ignoreX, ignoreY, ignoreZ);
         }
 
         public static float CalculateArea_Triangle(Vector3 p1, Vector3 p2, Vector3 p3)
@@ -99,7 +99,7 @@ namespace WaterBuoyancy
             int[] triangles = mesh.triangles;
             for (int i = 0; i < mesh.triangles.Length; i += 3)
             {
-                Vector3 p1 = vertices[triangles[i]];
+                Vector3 p1 = vertices[triangles[i + 0]];
                 Vector3 p2 = vertices[triangles[i + 1]];
                 Vector3 p3 = vertices[triangles[i + 2]];
 
