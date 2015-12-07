@@ -134,6 +134,7 @@ namespace WaterBuoyancy
                 //    }
                 //}
 
+                // Test GetSurroundingTrianglePolygon(Vector3 worldPoint);
                 //if (debugTrans != null)
                 //{
                 //    Gizmos.color = Color.blue;
@@ -156,8 +157,8 @@ namespace WaterBuoyancy
         public Vector3[] GetSurroundingTrianglePolygon(Vector3 worldPoint)
         {
             Vector3 localPoint = this.transform.InverseTransformPoint(worldPoint);
-            int x = Mathf.CeilToInt(localPoint.x);
-            int z = Mathf.CeilToInt(localPoint.z);
+            int x = Mathf.CeilToInt(localPoint.x / this.QuadSegmentSize);
+            int z = Mathf.CeilToInt(localPoint.z / this.QuadSegmentSize);
             if (x <= 0 || z <= 0 || x >= (this.Columns + 1) || z >= (this.Rows + 1))
             {
                 return null;
@@ -188,13 +189,13 @@ namespace WaterBuoyancy
                 allPoints.Add(this.meshWorldVertices[i]);
             }
 
-            Vector3[] closest = new Vector3[pointsCount];
-            for (int i = 0; i < closest.Length; i++)
+            Vector3[] closestPoints = new Vector3[pointsCount];
+            for (int i = 0; i < closestPoints.Length; i++)
             {
-                closest[i] = allPoints.Remove();
+                closestPoints[i] = allPoints.Remove();
             }
 
-            return closest;
+            return closestPoints;
         }
 
         public Vector3 GetSurfaceNormal(Vector3 worldPoint)
