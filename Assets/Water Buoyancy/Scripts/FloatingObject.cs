@@ -51,7 +51,7 @@ namespace WaterBuoyancy
         {
             if (this.water != null && this.voxels.Length > 0)
             {
-                Vector3 forceAtSingleVoxel = this.CalculateMaxBouyancyForce() / this.voxels.Length;
+                Vector3 forceAtSingleVoxel = this.CalculateMaxBuoyancyForce() / this.voxels.Length;
                 Bounds bounds = this.collider.bounds;
                 float voxelHeight = bounds.size.y * this.normalizedVoxelSize;
 
@@ -114,12 +114,12 @@ namespace WaterBuoyancy
             }
         }
 
-        private Vector3 CalculateMaxBouyancyForce()
+        private Vector3 CalculateMaxBuoyancyForce()
         {
             float objectVolume = this.rigidbody.mass  / this.density;
-            Vector3 maxBouyancyForce = this.water.Density * objectVolume * -Physics.gravity;
+            Vector3 maxBuoyancyForce = this.water.Density * objectVolume * -Physics.gravity;
 
-            return maxBouyancyForce;
+            return maxBuoyancyForce;
         }
 
         private Vector3[] CutIntoVoxels()
