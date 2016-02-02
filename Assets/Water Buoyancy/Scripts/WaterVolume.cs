@@ -230,6 +230,7 @@ namespace WaterBuoyancy
                     planeNormal *= -1f;
                 }
 
+                // Plane equation
                 float yOnWaterSurface = (-(worldPoint.x * planeNormal.x) - (worldPoint.z * planeNormal.z) + Vector3.Dot(meshPolygon[0], planeNormal)) / planeNormal.y;
                 //Vector3 pointOnWaterSurface = new Vector3(point.x, yOnWaterSurface, point.z);
                 //DebugUtils.DrawPoint(pointOnWaterSurface, Color.magenta);
