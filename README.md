@@ -1,9 +1,9 @@
 # Unity-WaterBuoyancy
 Water Buoyancy Simulation for Unity Engine
 
-![gif](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/Water%20Buoyancy/idle.gif)
-![gif](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/Water%20Buoyancy/dive-in.gif)
-![screenshot](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/Water%20Buoyancy/surface-normal.png)
+![gif](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/water-buoyancy/idle.gif)
+![gif](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/water-buoyancy/dive-in.gif)
+![screenshot](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/water-buoyancy/surface-normal.png)
 
 ## System Requirements
 
