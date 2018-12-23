@@ -7,7 +7,7 @@ Water Buoyancy Simulation for Unity Engine
 
 ## System Requirements
 
-Unity 5.1 or later versions. Feel free to try older version
+Unity 2018.3 or later versions. Feel free to try older version
 
 ## How To Setup
 
