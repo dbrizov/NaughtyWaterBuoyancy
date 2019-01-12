@@ -3,8 +3,7 @@ Unity
 ===============
 Temp/
 Library/
-UnityVS/
-UnityVS.meta
+Logs/
 
 =====================================
 Visual Studio / MonoDevelop generated
@@ -20,6 +19,7 @@ obj/
 *.user
 *.unityproj
 *.booproj
+*.vs
 
 ============
 OS generated

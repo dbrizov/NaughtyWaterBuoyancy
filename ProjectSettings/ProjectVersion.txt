@@ -1,2 +1,1 @@
-m_EditorVersion: 5.3.2p1
-m_StandardAssetsVersion: 0
+m_EditorVersion: 2018.3.0f2
