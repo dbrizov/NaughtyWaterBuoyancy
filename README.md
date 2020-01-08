@@ -1,4 +1,4 @@
-# Unity-WaterBuoyancy
+# NaughtyWaterBuoyancy
 Water Buoyancy Simulation for Unity Engine
 
 ![gif](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/water-buoyancy/idle.gif)
@@ -6,11 +6,9 @@ Water Buoyancy Simulation for Unity Engine
 ![screenshot](https://github.com/dbrizov/dbrizov.github.io/blob/master/images/project-images/water-buoyancy/surface-normal.png)
 
 ## System Requirements
-
 Unity 2018.3.0 or later versions. Feel free to try older version
 
 ## How To Setup
-
 You can use the ready to go prefabs (**WaterPro_DayTime** and **WaterPro_NightTime**). <br>
 They are both located in the Prefabs folder. The only difference between the two
 is that they use different shaders for daylight and moonlight. <br>
@@ -26,7 +24,6 @@ The other half of the volume will be above the water. For more info see this [Bu
 The **WaterVolume.cs** script works only with the procedural Mesh in the project due to performance optimizations.
 
 ## License
-
 The MIT License (MIT)
 
 Copyright (c) 2015 Denis Rizov
