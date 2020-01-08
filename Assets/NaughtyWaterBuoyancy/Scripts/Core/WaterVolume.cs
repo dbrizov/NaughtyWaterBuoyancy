@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using WaterBuoyancy.Collections;
 
-namespace WaterBuoyancy
+namespace NaughtyWaterBuoyancy
 {
     [RequireComponent(typeof(BoxCollider))]
     [RequireComponent(typeof(MeshFilter))]

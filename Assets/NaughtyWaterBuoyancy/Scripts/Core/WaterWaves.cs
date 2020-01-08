@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WaterBuoyancy
+namespace NaughtyWaterBuoyancy
 {
     public class WaterWaves : MonoBehaviour
     {

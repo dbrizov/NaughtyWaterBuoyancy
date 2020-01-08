@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WaterBuoyancy
+namespace NaughtyWaterBuoyancy
 {
     [ExecuteInEditMode] // Make water live-update even when not in play mode
     public class WaterFX : MonoBehaviour

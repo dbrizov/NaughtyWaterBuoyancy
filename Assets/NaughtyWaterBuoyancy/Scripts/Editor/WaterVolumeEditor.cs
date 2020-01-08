@@ -1,10 +1,10 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace WaterBuoyancy
+namespace NaughtyWaterBuoyancy.Editor
 {
     [CustomEditor(typeof(WaterVolume))]
-    public class WaterVolumeEditor : Editor
+    public class WaterVolumeEditor : UnityEditor.Editor
     {
         private const float BOX_COLLIDER_HEIGHT = 5f;
 
@@ -15,11 +15,11 @@ namespace WaterBuoyancy
         private SerializedProperty quadSegmentSize;
         //private SerializedProperty debugTrans;
 
-        [MenuItem("Water Bouyancy/Create Water Mesh")]
+        [MenuItem("NaughtyWaterBouyancy/Create Water Mesh")]
         private static void CreateMesh()
         {
             Mesh mesh = WaterMeshGenerator.GenerateMesh(5, 5, 1f);
-            AssetDatabase.CreateAsset(mesh, "Assets/Water Buoyancy/Models/Water Mesh.asset");
+            AssetDatabase.CreateAsset(mesh, "Assets/NaughtyWaterBuoyancy/Models/Water Mesh.asset");
         }
 
         protected virtual void OnEnable()
